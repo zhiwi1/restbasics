@@ -3,5 +3,5 @@ rootProject.name = 'restbasics'
 include 'persistence'
 include 'service'
 include 'controller'
-include 'persistence'
+include 'model'
 
