@@ -5,11 +5,11 @@ import com.epam.esm.controller.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Component
+@Repository
 public class TagDaoImpl implements TagDao {
 
     private static final String SQL_FIND_ALL = "SELECT id,name FROM tags";
@@ -33,7 +33,7 @@ public class TagDaoImpl implements TagDao {
     public List<Tag> findAll() {
         return jdbcTemplate.query(SQL_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
     }
-
+//mapper custom, package mapper
     @Override
     public Tag findById(long id) {
         return jdbcTemplate.query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), new Object[]{id})

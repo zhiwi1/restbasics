@@ -10,8 +10,23 @@ repositories {
 }
 
 dependencies {
+    implementation project(':service')
+    implementation project(':model')
+    implementation 'org.springframework:spring-web:5.3.9'
+// https://mvnrepository.com/artifact/org.springframework/spring-webmvc
+    implementation 'org.springframework:spring-webmvc:5.3.9'
+// https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
+    implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
+// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-runner
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+    implementation 'org.eclipse.jetty:jetty-server:11.0.6'
+// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp
+    implementation 'org.eclipse.jetty:jetty-webapp:11.0.6'
+// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-jsp
+    implementation 'org.eclipse.jetty:jetty-jsp:9.3.0.M1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
 }
 
 test {

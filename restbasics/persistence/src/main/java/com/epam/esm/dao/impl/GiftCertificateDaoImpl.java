@@ -1,7 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.controller.entity.GiftCertificate;
-import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.GiftCertificateDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +12,7 @@ import java.util.*;
 
 
 @Repository
-public class CertificateDaoImpl implements CertificateDao {
+public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     private static final String SQL_FIND_ALL_CERTIFICATES =
             "select id, name, price,  create_date, last_update_date, duration " +
@@ -41,7 +41,7 @@ public class CertificateDaoImpl implements CertificateDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public CertificateDaoImpl(JdbcTemplate jdbcTemplate) {
+    public GiftCertificateDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -52,7 +52,7 @@ public class CertificateDaoImpl implements CertificateDao {
 
 
     @Override
-    public GiftCertificate findById(int id) {
+    public GiftCertificate findById(long id) {
         return jdbcTemplate.query(SQL_FIND_CERTIFICATE_BY_ID, new BeanPropertyRowMapper<>(GiftCertificate.class), new Object[]{id})
                 .stream().findAny().orElse(null);
     }

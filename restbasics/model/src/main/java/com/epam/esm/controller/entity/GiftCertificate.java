@@ -1,26 +1,26 @@
 package com.epam.esm.controller.entity;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
+
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 public class GiftCertificate {
-
-    private int id;
+    private long id;
     private String name;
     private String description;
-    private float price;
-    private Date createDate;
-    private Date lastUpdateDate;
-    private int duration;
-    private Set<Tag> tags = new HashSet<>();
+    private BigDecimal price;
+    private ZonedDateTime createDate;
+    private ZonedDateTime lastUpdateDate;
+    private Duration duration;
+    private Set<Tag> tags;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -40,35 +40,35 @@ public class GiftCertificate {
         this.description = description;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public Date getCreateDate() {
+    public ZonedDateTime getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(ZonedDateTime createDate) {
         this.createDate = createDate;
     }
 
-    public Date getLastUpdateDate() {
+    public ZonedDateTime getLastUpdateDate() {
         return lastUpdateDate;
     }
 
-    public void setLastUpdateDate(Date lastUpdateDate) {
+    public void setLastUpdateDate(ZonedDateTime lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public int getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
@@ -78,19 +78,6 @@ public class GiftCertificate {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GiftCertificate that = (GiftCertificate) o;
-        return id == that.id && Float.compare(that.price, price) == 0 && duration == that.duration && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(createDate, that.createDate) && Objects.equals(lastUpdateDate, that.lastUpdateDate) && Objects.equals(tags, that.tags);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, price, createDate, lastUpdateDate, duration, tags);
     }
 
     @Override

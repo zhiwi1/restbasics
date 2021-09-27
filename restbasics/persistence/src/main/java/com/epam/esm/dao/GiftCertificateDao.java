@@ -4,10 +4,10 @@ import com.epam.esm.controller.entity.GiftCertificate;
 
 import java.util.List;
 
-public interface CertificateDao {
+public interface GiftCertificateDao {
     public List<GiftCertificate> findAll();
 
-    public GiftCertificate findById(int id);
+    public GiftCertificate findById(long id);
 
     public GiftCertificate findByName(String name);
 
