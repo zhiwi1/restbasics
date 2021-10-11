@@ -40,6 +40,8 @@ public class TagController {
     public void createTag(@Valid @RequestBody TagDto tagDto) {
         tagService.addTag(tagDto);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteTag(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
         tagService.removeTag(id);
