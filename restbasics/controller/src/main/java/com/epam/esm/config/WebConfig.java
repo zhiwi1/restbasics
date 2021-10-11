@@ -1,6 +1,7 @@
 package com.epam.esm.config;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,17 +25,9 @@ import java.util.TimeZone;
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.epam.esm"})
 public class WebConfig implements WebMvcConfigurer {
-    @Value("UTF-8")
-    private String encoding;
-    @Value("exception_message")
-    private String fileName;
-    @Value("en")
-    private String languageOfLocale;
-    @Value("locale")
-    private String cookieName;
-    @Value("lang")
-    private String langParamName;
-    private static final int COOKIE_MAX_AGE = 4800;
+
+    @Autowired
+    private WebConfigParam webConfigParam;
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -44,9 +37,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver resolver = new CookieLocaleResolver();
-        resolver.setDefaultLocale(new Locale(languageOfLocale));
-        resolver.setCookieName(cookieName);
-        resolver.setCookieMaxAge(COOKIE_MAX_AGE);
+        resolver.setDefaultLocale(new Locale(webConfigParam.getLanguageOfLocale()));
+        resolver.setCookieName(webConfigParam.getCookieName());
+        resolver.setCookieMaxAge(webConfigParam.getCookieMaxAge());
         resolver.setDefaultTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
         return resolver;
     }
@@ -54,16 +47,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-        interceptor.setParamName(langParamName);
+        interceptor.setParamName(webConfigParam.getInterceptorName());
         registry.addInterceptor(interceptor);
     }
 
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename(fileName);
+        messageSource.setBasename(webConfigParam.getFilename());
         messageSource.setUseCodeAsDefaultMessage(true);
-        messageSource.setDefaultEncoding(encoding);
+        messageSource.setDefaultEncoding(webConfigParam.getEncoding());
         return messageSource;
     }
 

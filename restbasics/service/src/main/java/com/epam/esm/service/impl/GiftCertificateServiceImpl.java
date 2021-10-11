@@ -4,19 +4,18 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.DublicateResourceException;
+import com.epam.esm.exception.ExceptionCode;
+import com.epam.esm.exception.ExceptionMessageKey;
+import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.mapper.ServiceGiftCertificateMapper;
+import com.epam.esm.mapper.ServiceTagMapper;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.service.dto.GiftCertificateDto;
-import com.epam.esm.service.dto.GiftCertificateQueryParamDto;
-import com.epam.esm.service.dto.TagDto;
-import com.epam.esm.service.exception.DublicateResourceException;
-import com.epam.esm.service.exception.ExceptionCode;
-import com.epam.esm.service.exception.ExceptionMessageKey;
-import com.epam.esm.service.exception.ResourceNotFoundException;
-import com.epam.esm.service.mapper.ServiceGiftCertificateMapper;
-import com.epam.esm.service.mapper.ServiceTagMapper;
-import com.epam.esm.service.util.GiftCertificateQueryCreator;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParamDto;
+import com.epam.esm.dto.TagDto;
+import com.epam.esm.util.GiftCertificateQueryCreator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,22 +40,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
+    public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
         Optional<Tag> existingTagOptional = tagDao.findByName(giftCertificateDto.getName());
         if (existingTagOptional.isPresent()) {
-            throw new DublicateResourceException(
-                    ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
-                    ExceptionCode.INCORRECT_PARAMETER_VALUE);
+            //id передать
+            throw new DublicateResourceException();
         }
         GiftCertificate giftCertificate = certificateMapper.toEntity(giftCertificateDto);
-        ZonedDateTime zonedDateTime = ZonedDateTime.now();
-        giftCertificate.setCreateDate(zonedDateTime);
-        giftCertificate.setLastUpdateDate(zonedDateTime);
-        Optional<GiftCertificate> addedGiftCertificate = giftCertificateDao.add(giftCertificate);
+        GiftCertificate addedGiftCertificate = giftCertificateDao.create(giftCertificate);
         addedGiftCertificate.map(certificateMapper::toDto).orElseThrow(() -> new ResourceNotFoundException
                 (ExceptionMessageKey.RESOURCE_NOT_FOUND_KEY,
                         ExceptionCode.RESOURCE_NOT_FOUND));
-        addAndSetTags(giftCertificateDto);
+        attachTagToCertificate(giftCertificateDto);
         return giftCertificateDto;
     }
 
@@ -105,7 +100,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
-        addAndSetTags(giftCertificateDto);
+        attachTagToCertificate(giftCertificateDto);
         GiftCertificateDto foundGiftCertificateDto = findById(giftCertificateDto.getId());
         updateFields(foundGiftCertificateDto, giftCertificateDto);
         GiftCertificate foundGiftCertificate = certificateMapper.toEntity(foundGiftCertificateDto);
@@ -115,22 +110,26 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                         ExceptionCode.RESOURCE_NOT_FOUND));
     }
 
+
+
     @Transactional
     @Override
-    public void remove(long id) {
+    public void delete(Long id) {
+        //classical if
         giftCertificateDao.findById(id).orElseThrow(() -> new ResourceNotFoundException
                 (ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
                         ExceptionCode.INCORRECT_PARAMETER_VALUE));
+        //reten boolean jdbc template delete
         giftCertificateDao.delete(id);
     }
 
-    private void addAndSetTags(GiftCertificateDto giftCertificateDto) {
+    private void attachTagToCertificate(GiftCertificateDto giftCertificateDto) {
         Set<TagDto> tags = new HashSet<>();
         if (giftCertificateDto.getTags() != null) {
             Set<TagDto> tagsSet = giftCertificateDto.getTags()
                     .stream()
                     .map(tagMapper::toEntity)
-                    .map(tagDao::insert)
+                    .map(tagDao::create)
                     .map(Optional::get)
                     .map(tagMapper::toDto)
                     .collect(Collectors.toSet());

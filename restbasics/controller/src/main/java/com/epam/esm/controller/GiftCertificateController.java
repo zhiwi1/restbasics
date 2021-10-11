@@ -2,9 +2,9 @@ package com.epam.esm.controller;
 
 
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.service.dto.GiftCertificateDto;
-import com.epam.esm.service.dto.GiftCertificateQueryParamDto;
-import com.epam.esm.service.exception.ExceptionMessageKey;
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.GiftCertificateQueryParamDto;
+import com.epam.esm.exception.ExceptionMessageKey;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.http.HttpStatus;
@@ -36,18 +36,22 @@ public class GiftCertificateController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void create(@Valid @RequestBody GiftCertificateDto giftCertificate) {
-        giftCertificateService.add(giftCertificate);
+        giftCertificateService.create(giftCertificate);
     }
 
     @PutMapping
     public void update(@Valid @RequestBody GiftCertificateDto giftCertificate) {
         giftCertificateService.update(giftCertificate);
     }
+    @PatchMapping
+    public GiftCertificateDto updateCertificate(@Validated(PatchDto.class) @RequestBody GiftCertificateDto certificate) {
+        return certificateService.updateCertificate(certificate);
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
-        giftCertificateService.remove(id);
+        giftCertificateService.delete(id);
     }
 }
 

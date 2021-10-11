@@ -1,6 +1,6 @@
-package com.epam.esm.service.dto;
+package com.epam.esm.dto;
 
-import com.epam.esm.service.exception.ExceptionMessageKey;
+import com.epam.esm.exception.ExceptionMessageKey;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

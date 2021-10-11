@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @Import(DatabaseConfig.class)
+//?
 @ComponentScan("com.epam.esm")
 public class TestDatabaseConfig {
 
@@ -45,5 +46,6 @@ public class TestDatabaseConfig {
                 .addScript(certificateTagsCertificateTagsPath)
                 .build();
     }
+
 
 }

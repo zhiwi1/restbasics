@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 
 @Data
 @Builder
@@ -16,5 +14,4 @@ import java.util.List;
 public class Tag {
     private long id;
     private String name;
-    private List<GiftCertificate> list;
 }

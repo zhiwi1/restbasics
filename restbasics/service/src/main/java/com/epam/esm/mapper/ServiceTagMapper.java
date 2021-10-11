@@ -1,7 +1,7 @@
-package com.epam.esm.service.mapper;
+package com.epam.esm.mapper;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.dto.TagDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

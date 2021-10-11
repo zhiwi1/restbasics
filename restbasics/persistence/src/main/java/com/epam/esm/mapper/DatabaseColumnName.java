@@ -1,4 +1,4 @@
-package com.epam.esm.dao.mapper;
+package com.epam.esm.mapper;
 
 import lombok.experimental.UtilityClass;
 

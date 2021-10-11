@@ -1,21 +1,14 @@
 package com.epam.esm.service;
 
-import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.dto.TagDto;
 
 import java.util.List;
 import java.util.Set;
 
 
-public interface TagService {
-    TagDto addTag(TagDto tagDto);
+public interface TagService extends BaseService<TagDto, Long> {
 
-    List<TagDto> findAllTags();
-
-    TagDto findTagById(long id);
-
-     TagDto findTagByName(String name);
-
-    void removeTag(long id);
+    TagDto findTagByName(String name);
 
     Set<TagDto> findTagsByGiftCertificateId(long giftCertificateId);
 }

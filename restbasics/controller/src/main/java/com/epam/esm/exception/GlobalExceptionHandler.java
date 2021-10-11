@@ -1,10 +1,5 @@
 package com.epam.esm.exception;
 
-import com.epam.esm.service.exception.ExceptionCode;
-import com.epam.esm.service.exception.ExceptionMessageKey;
-import com.epam.esm.service.exception.ResourceNotFoundException;
-
-import com.epam.esm.service.exception.DublicateResourceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionFailedException;

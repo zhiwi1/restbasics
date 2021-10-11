@@ -1,6 +1,6 @@
-package com.epam.esm.service.dto;
+package com.epam.esm.dto;
 
-import com.epam.esm.service.exception.ExceptionMessageKey;
+import com.epam.esm.exception.ExceptionMessageKey;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 

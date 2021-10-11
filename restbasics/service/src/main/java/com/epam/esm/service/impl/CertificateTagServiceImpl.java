@@ -1,15 +1,13 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.CertificateTagDao;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.CertificateTagService;
-import com.epam.esm.service.dto.CertificateTagDto;
-import com.epam.esm.service.exception.ExceptionCode;
-import com.epam.esm.service.exception.ExceptionMessageKey;
-import com.epam.esm.service.exception.ResourceNotFoundException;
+import com.epam.esm.exception.ExceptionCode;
+import com.epam.esm.exception.ExceptionMessageKey;
+import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.dto.CertificateTagDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +32,7 @@ public class CertificateTagServiceImpl implements CertificateTagService {
                     (ExceptionMessageKey.RESOURCE_NOT_FOUND_KEY,
                             ExceptionCode.RESOURCE_NOT_FOUND);
         }
-        certificateTagDao.addTaggedCertificate(certificateTagDto.getTagId(), certificateTagDto.getCertificateId());
+        certificateTagDao.attachTag(certificateTagDto.getTagId(), certificateTagDto.getCertificateId());
 
     }
 }

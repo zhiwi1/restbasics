@@ -1,6 +1,6 @@
-package com.epam.esm.service.util;
+package com.epam.esm.util;
 
-import com.epam.esm.service.dto.GiftCertificateQueryParamDto;
+import com.epam.esm.dto.GiftCertificateQueryParamDto;
 import lombok.experimental.UtilityClass;
 
 import java.text.MessageFormat;

@@ -1,10 +1,11 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.CertificateTagDto;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.dto.TagDto;
 
 
-import com.epam.esm.service.exception.ExceptionMessageKey;
+import com.epam.esm.exception.ExceptionMessageKey;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
@@ -35,18 +36,22 @@ public class TagController {
         return tagService.findTagById(id);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void createTag(@Valid @RequestBody TagDto tagDto) {
         tagService.addTag(tagDto);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTag(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
         tagService.removeTag(id);
     }
 
-
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+    public void create(@Valid @RequestBody CertificateTagDto certificateTagDto) {
+        certificateTagService.addCertificateTag(certificateTagDto);
+    }
 }
 
