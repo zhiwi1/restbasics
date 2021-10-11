@@ -14,7 +14,7 @@ public class GiftCertificateQueryCreator {
     private static final String DESCRIPTION = "description LIKE ''%{0}%''";
     private static final String GROUP_BY = " GROUP BY certificates.id";
 
-    public String createQuery(GiftCertificateQueryParamDto giftCertificateQueryParameters) {
+    public static String createQuery(GiftCertificateQueryParamDto giftCertificateQueryParameters) {
         StringBuilder condition = new StringBuilder();
         addTagName(giftCertificateQueryParameters, condition);
         addName(giftCertificateQueryParameters, condition);
@@ -24,7 +24,7 @@ public class GiftCertificateQueryCreator {
         return condition.toString();
     }
 
-    private void addTagName(GiftCertificateQueryParamDto giftCertificateQueryParameters, StringBuilder condition) {
+    private static void addTagName(GiftCertificateQueryParamDto giftCertificateQueryParameters, StringBuilder condition) {
         if (giftCertificateQueryParameters.getTagName() != null) {
             addOperator(condition);
             condition.append(String.format(TAG_NAME, giftCertificateQueryParameters.getTagName()));
@@ -32,8 +32,7 @@ public class GiftCertificateQueryCreator {
     }
 
 
-
-    private void addName(GiftCertificateQueryParamDto giftCertificateQueryParameters, StringBuilder condition) {
+    private static void addName(GiftCertificateQueryParamDto giftCertificateQueryParameters, StringBuilder condition) {
         if (giftCertificateQueryParameters.getName() != null) {
             addOperator(condition);
             condition.append(MessageFormat.format(NAME, giftCertificateQueryParameters.getName()));
@@ -48,7 +47,7 @@ public class GiftCertificateQueryCreator {
         }
     }
 
-    private void addSortType(GiftCertificateQueryParamDto giftCertificateQueryParameters, StringBuilder condition) {
+    private static void addSortType(GiftCertificateQueryParamDto giftCertificateQueryParameters, StringBuilder condition) {
         if (giftCertificateQueryParameters.getSortType() != null) {
             condition.append(giftCertificateQueryParameters.getSortType().getSqlExpression());
             if (giftCertificateQueryParameters.getOrderType() != null) {
@@ -57,11 +56,7 @@ public class GiftCertificateQueryCreator {
         }
     }
 
-    private void addOperator(StringBuilder condition) {
-        if (condition.toString().isEmpty()) {
-            condition.append(WHERE);
-        } else {
-            condition.append(AND);
-        }
+    private static void addOperator(StringBuilder condition) {
+        condition.append((condition.length() == 0) ? WHERE : AND);
     }
 }

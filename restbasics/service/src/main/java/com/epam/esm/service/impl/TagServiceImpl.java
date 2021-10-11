@@ -4,12 +4,12 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.exception.DublicateResourceException;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.ExceptionMessageKey;
 import com.epam.esm.service.exception.ResourceNotFoundException;
-import com.epam.esm.service.exception.DublicateResourceException;
 import com.epam.esm.service.mapper.ServiceTagMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,27 +21,24 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagDao tagDao;
     private final ServiceTagMapper tagMapper;
 
-    @Autowired
-    public TagServiceImpl(TagDao tagDao, ServiceTagMapper tagMapper) {
-        this.tagDao = tagDao;
-        this.tagMapper = tagMapper;
-    }
-
-   @Transactional
+    @Transactional
     @Override
     public TagDto addTag(TagDto tagDto) {
         Optional<Tag> existingTagOptional = tagDao.findByName(tagDto.getName());
         if (existingTagOptional.isPresent()) {
-            throw new ResourceNotFoundException
-                    (ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
-                            ExceptionCode.INCORRECT_PARAMETER_VALUE);
+            throw new DublicateResourceException(
+                    ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
+                    ExceptionCode.INCORRECT_PARAMETER_VALUE);
         }
         Tag tag = tagMapper.toEntity(tagDto);
-        Tag insertedTag = tagDao.insert(tag).orElseThrow();
+        Tag insertedTag = tagDao.insert(tag).orElseThrow(() -> new ResourceNotFoundException
+                (ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
+                        ExceptionCode.INCORRECT_PARAMETER_VALUE));
         return tagMapper.toDto(insertedTag);
     }
 

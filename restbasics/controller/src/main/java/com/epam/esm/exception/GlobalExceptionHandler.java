@@ -36,33 +36,33 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    Set<ExceptionHandlerResponse> onConstraintValidationException(
+    Set<ExceptionResponse> onConstraintValidationException(
             ConstraintViolationException e, Locale locale) {
         Set<ConstraintViolation<?>> set = e.getConstraintViolations();
         return set.stream().map(violation -> exceptionMessageCreator.
                         createMessage(violation.getMessage(), locale))
-                .map(message -> new ExceptionHandlerResponse(
+                .map(message -> new ExceptionResponse(
                         ExceptionCode.INCORRECT_PARAMETER_VALUE, message))
                 .collect(Collectors.toSet());
 
     }
     @ExceptionHandler(DublicateResourceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionHandlerResponse handleDublicateResourceException(
+    public ExceptionResponse handleDublicateResourceException(
             DublicateResourceException e, Locale locale) {
         String exceptionMessage = exceptionMessageCreator.createMessage(e.getMessageKey(),
                 locale);
         log.error(exceptionMessage);
-        return new ExceptionHandlerResponse(e.getCode(), exceptionMessage);
+        return new ExceptionResponse(e.getCode(), exceptionMessage);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    Set<ExceptionHandlerResponse> onMethodArgumentNotValidException(
+    Set<ExceptionResponse> onMethodArgumentNotValidException(
             MethodArgumentNotValidException e, Locale locale) {
         return e.getBindingResult().getFieldErrors().stream()
                 .map(error->exceptionMessageCreator.createMessage(error.getDefaultMessage(), locale))
-                .map(message -> new ExceptionHandlerResponse(
+                .map(message -> new ExceptionResponse(
                         ExceptionCode.INCORRECT_PARAMETER_VALUE, message))
                 .collect(Collectors.toSet());
     }
@@ -70,12 +70,12 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionHandlerResponse handleResourceNotFoundException(
+    public ExceptionResponse handleResourceNotFoundException(
             ResourceNotFoundException e, Locale locale) {
         String exceptionMessage = exceptionMessageCreator.createMessage(e.getMessageKey(),
                 locale);
         log.error(exceptionMessage);
-        return new ExceptionHandlerResponse(e.getCode(), exceptionMessage);
+        return new ExceptionResponse(e.getCode(), exceptionMessage);
     }
 
 
@@ -87,19 +87,19 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public ExceptionHandlerResponse handleHttpMediaTypeNotSupportedException(
+    public ExceptionResponse handleHttpMediaTypeNotSupportedException(
             HttpMediaTypeNotSupportedException exception, Locale locale) {
         String exceptionMessage = exceptionMessageCreator.createMessage(ExceptionMessageKey.UNSUPPORTED_MEDIA_TYPE, locale);
         log.error(exceptionMessage);
-        return new ExceptionHandlerResponse(ExceptionCode.UNSUPPORTED_MEDIA_TYPE, exceptionMessage);
+        return new ExceptionResponse(ExceptionCode.UNSUPPORTED_MEDIA_TYPE, exceptionMessage);
     }
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionHandlerResponse handleRuntimeException(RuntimeException exception, Locale locale) {
+    public ExceptionResponse handleRuntimeException(RuntimeException exception, Locale locale) {
         String exceptionMessage = exceptionMessageCreator.createMessage(ExceptionMessageKey.INTERNAL_ERROR_KEY, locale);
         log.error(exceptionMessage);
-        return new ExceptionHandlerResponse(ExceptionCode.INTERNAL_ERROR, exceptionMessage);
+        return new ExceptionResponse(ExceptionCode.INTERNAL_ERROR, exceptionMessage);
     }
 
 }

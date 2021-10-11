@@ -33,8 +33,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("locale")
     private String cookieName;
     @Value("lang")
-    private  String langParamName;
-    private final int COOKIE_MAX_AGE = 4800;
+    private String langParamName;
+    private static final int COOKIE_MAX_AGE = 4800;
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {

@@ -2,18 +2,14 @@ package com.epam.esm.service.mapper;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.dto.TagDto;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ServiceTagMapper {
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public ServiceTagMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
 
     public Tag toEntity(TagDto tagDto) {
         return modelMapper.map(tagDto, Tag.class);

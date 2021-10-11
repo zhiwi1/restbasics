@@ -8,12 +8,14 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.dto.GiftCertificateDto;
 import com.epam.esm.service.dto.GiftCertificateQueryParamDto;
 import com.epam.esm.service.dto.TagDto;
+import com.epam.esm.service.exception.DublicateResourceException;
 import com.epam.esm.service.exception.ExceptionCode;
 import com.epam.esm.service.exception.ExceptionMessageKey;
 import com.epam.esm.service.exception.ResourceNotFoundException;
 import com.epam.esm.service.mapper.ServiceGiftCertificateMapper;
 import com.epam.esm.service.mapper.ServiceTagMapper;
 import com.epam.esm.service.util.GiftCertificateQueryCreator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,23 +31,23 @@ import java.util.stream.Collectors;
 
 
 @Service
+@RequiredArgsConstructor
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateDao giftCertificateDao;
     private final TagDao tagDao;
     private final ServiceGiftCertificateMapper certificateMapper;
     private final ServiceTagMapper tagMapper;
 
-    @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, TagDao tagDao, ServiceGiftCertificateMapper certificateMapper, ServiceTagMapper tagMapper) {
-        this.giftCertificateDao = giftCertificateDao;
-        this.tagDao = tagDao;
-        this.certificateMapper = certificateMapper;
-        this.tagMapper = tagMapper;
-    }
 
     @Transactional
     @Override
     public GiftCertificateDto add(GiftCertificateDto giftCertificateDto) {
+        Optional<Tag> existingTagOptional = tagDao.findByName(giftCertificateDto.getName());
+        if (existingTagOptional.isPresent()) {
+            throw new DublicateResourceException(
+                    ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
+                    ExceptionCode.INCORRECT_PARAMETER_VALUE);
+        }
         GiftCertificate giftCertificate = certificateMapper.toEntity(giftCertificateDto);
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         giftCertificate.setCreateDate(zonedDateTime);
