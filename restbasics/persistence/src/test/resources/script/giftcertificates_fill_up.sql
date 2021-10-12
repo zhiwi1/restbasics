@@ -1,5 +1,5 @@
 INSERT INTO certificates (name, description, price, duration, create_date, last_update_date)
-VALUES ('Cinema', 'Very good and not expensive', 100.1, 1, null, null);
+VALUES ('Cinema', 'Very good and not expensive', 100.1, 1, '2019-01-01 00:00:00', '2019-01-01 00:00:00');
 INSERT INTO certificates (name, description, price, duration, create_date, last_update_date)
 VALUES ('Dance Studio', 'Best studio in the city', 500, 1, '2019-01-01 00:00:00', '2020-01-01 12:10:00');
 INSERT INTO certificates (name, description, price, duration, create_date, last_update_date)

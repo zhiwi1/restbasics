@@ -62,7 +62,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         try {
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject(
-                            SQL_FIND_CERTIFICATE_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, certificateMapper
+                            SQL_FIND_CERTIFICATE_BY_ID, new Object[]{id}, new int[]{Types.BIGINT}, certificateMapper
                     )
             );
         } catch (EmptyResultDataAccessException e) {
@@ -70,10 +70,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         }
         return Optional.empty();
     }
+
     @Override
     public List<GiftCertificate> findAll() {
         return jdbcTemplate.query(SQL_FIND_ALL_CERTIFICATES, certificateMapper);
     }
+
     @Override
     public GiftCertificate create(GiftCertificate certificate) {
         var keyHolder = new GeneratedKeyHolder();
@@ -95,8 +97,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public void delete(Long id) {
-        jdbcTemplate.queryForObject(
-                SQL_DELETE_CERTIFICATE, new Object[]{id}, new int[]{Types.INTEGER}, certificateMapper
+        jdbcTemplate.update(
+                SQL_DELETE_CERTIFICATE, new Object[]{id}, new int[]{Types.BIGINT}
         );
     }
 
@@ -106,11 +108,12 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     public GiftCertificate update(GiftCertificate giftCertificate) {
         giftCertificate.setLastUpdateDate(ZonedDateTime.now(ZoneId.systemDefault()));
         try {
-            return jdbcTemplate.queryForObject(
-                    SQL_UPDATE_CERTIFICATE, new Object[]{giftCertificate.getName(),
+            jdbcTemplate.update(
+                    SQL_UPDATE_CERTIFICATE,
+                    new Object[]{giftCertificate.getName(),
                             giftCertificate.getPrice(), giftCertificate.getLastUpdateDate(),
-                            giftCertificate.getDuration(), giftCertificate.getDescription(), giftCertificate.getId()}, new int[]{Types.INTEGER}, certificateMapper
-            );
+                            giftCertificate.getDuration(), giftCertificate.getDescription(), giftCertificate.getId()},
+                    new int[]{Types.VARCHAR, Types.DECIMAL, Types.TIMESTAMP, Types.INTEGER, Types.VARCHAR, Types.BIGINT});
 
         } catch (EmptyResultDataAccessException e) {
             log.error(String.format("Zero rows were actually returns:%s", e.getMessage()));

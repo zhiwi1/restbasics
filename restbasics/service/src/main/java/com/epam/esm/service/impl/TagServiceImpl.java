@@ -51,7 +51,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagDto findTagById(long id) {
+    public TagDto findById(long id) {
         Optional<Tag> foundTagOptional = tagDao.findById(id);
         return foundTagOptional.map(tagMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException

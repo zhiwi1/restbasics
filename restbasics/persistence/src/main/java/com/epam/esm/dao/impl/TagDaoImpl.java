@@ -53,7 +53,7 @@ public class TagDaoImpl implements TagDao {
         try {
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject(
-                            SQL_FIND_BY_ID, new Object[]{name}, new int[]{Types.INTEGER}, new BeanPropertyRowMapper<>()
+                            SQL_FIND_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, new BeanPropertyRowMapper<>(Tag.class)
                     )
             );
         } catch (EmptyResultDataAccessException e) {
@@ -98,7 +98,7 @@ public class TagDaoImpl implements TagDao {
         try {
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject(
-                            SQL_FIND_BY_ID, new Object[]{id}, new int[]{Types.INTEGER}, new BeanPropertyRowMapper<>()
+                            SQL_FIND_BY_ID, new Object[]{id}, new int[]{Types.BIGINT}, new BeanPropertyRowMapper<>(Tag.class)
                     )
             );
         } catch (EmptyResultDataAccessException e) {

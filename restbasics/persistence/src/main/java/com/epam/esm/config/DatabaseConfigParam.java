@@ -1,5 +1,7 @@
 package com.epam.esm.config;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -7,12 +9,12 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-@Component
+
 @lombok.Value
 @PropertySource(value = "classpath:property/database.properties", encoding = "UTF-8")
 public class DatabaseConfigParam {
     @Value("${poolSize:10}")
-    private final int poolSize;
+    private final String poolSize;
 
     @Value("${driver:com.mysql.cj.jdbc.Driver}")
     private final String driver;

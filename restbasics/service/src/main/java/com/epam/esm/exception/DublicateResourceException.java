@@ -1,10 +1,13 @@
 package com.epam.esm.exception;
 
+import lombok.Getter;
+
+@Getter
 public class DublicateResourceException extends ServiceException {
     private Long id;
     //message
-    public DublicateResourceException(String messageKey, Long id) {
-        super(messageKey);
+    public DublicateResourceException( Long id) {
+        super(ExceptionMessageKey.INVALID_INPUT);
         this.id = id;
     }
 
