@@ -119,7 +119,7 @@ class TagDaoImplTest {
 
     @ParameterizedTest
     @MethodSource("createTags")
-    void findByNameCorrectDataShouldReturnTagOptionalTest(Tag expected) {
+    void shouldReturnTagOptionalWhenFindByNameTest(Tag expected) {
         String name = expected.getName();
         tagDao.create(expected);
         Optional<Tag> actual = tagDao.findByName(name);
@@ -128,7 +128,7 @@ class TagDaoImplTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"WORK", "SDAAS", "    1"})
-    void findByNameCorrectDataShouldReturnEmptyOptionalTest(String name) {
+    void shouldReturnEmptyOptionalFindByNameCorrectDataTest(String name) {
         Optional<Tag> actual = tagDao.findByName(name);
         assertFalse(actual.isPresent());
     }

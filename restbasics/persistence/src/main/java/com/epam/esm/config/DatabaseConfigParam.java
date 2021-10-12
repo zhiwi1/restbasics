@@ -9,7 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-
 @lombok.Value
 @PropertySource(value = "classpath:property/database.properties", encoding = "UTF-8")
 public class DatabaseConfigParam {
