@@ -1,10 +1,11 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.dto.CertificateTagDto;
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.exception.DublicateResourceException;
-import com.epam.esm.exception.ExceptionCode;
-import com.epam.esm.exception.ExceptionMessageKey;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.ServiceTagMapper;
 import com.epam.esm.service.TagService;
@@ -24,26 +25,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagDao tagDao;
+    private final GiftCertificateDao giftCertificateDao;
     private final ServiceTagMapper tagMapper;
 
     @Transactional
     @Override
-    public TagDto addTag(TagDto tagDto) {
+    public TagDto create(TagDto tagDto) {
         Optional<Tag> existingTagOptional = tagDao.findByName(tagDto.getName());
         if (existingTagOptional.isPresent()) {
-            throw new DublicateResourceException(
-                    ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
-                    ExceptionCode.INCORRECT_PARAMETER_VALUE);
+            throw new DublicateResourceException(tagDto.getName());
         }
         Tag tag = tagMapper.toEntity(tagDto);
-        Tag insertedTag = tagDao.insert(tag).orElseThrow(() -> new ResourceNotFoundException
-                (ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
-                        ExceptionCode.INCORRECT_PARAMETER_VALUE));
+        Tag insertedTag = tagDao.create(tag);
         return tagMapper.toDto(insertedTag);
     }
 
     @Override
-    public List<TagDto> findAllTags() {
+    public List<TagDto> findAll() {
         List<Tag> foundTags = tagDao.findAll();
         return foundTags.stream()
                 .map(tagMapper::toDto)
@@ -51,35 +49,33 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagDto findById(long id) {
+    public TagDto findById(Long id) {
         Optional<Tag> foundTagOptional = tagDao.findById(id);
         return foundTagOptional.map(tagMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException
-                        (ExceptionMessageKey.RESOURCE_NOT_FOUND_KEY,
-                                ExceptionCode.RESOURCE_NOT_FOUND));
-    }
-
-    @Override
-    public TagDto findTagByName(String name) {
-        Optional<Tag> foundTagOptional = tagDao.findByName(name);
-        return foundTagOptional.map(tagMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException
-                        (ExceptionMessageKey.RESOURCE_NOT_FOUND_KEY,
-                                ExceptionCode.RESOURCE_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     @Transactional
     @Override
-    public void removeTag(long id) {
-        tagDao.findById(id).orElseThrow(() -> new ResourceNotFoundException
-                (ExceptionMessageKey.INCORRECT_PARAMETER_VALUE_KEY,
-                        ExceptionCode.INCORRECT_PARAMETER_VALUE));
+    public void delete(Long id) {
+        tagDao.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
         tagDao.delete(id);
     }
 
     @Override
-    public Set<TagDto> findTagsByGiftCertificateId(long giftCertificateId) {
-        List<Tag> tag = tagDao.findByGiftCertificateId(giftCertificateId);
+    public Set<TagDto> findTagsByGiftCertificateId(Long giftCertificateId) {
+        List<Tag> tag = tagDao.findByCertificateId(giftCertificateId);
         return tag.stream().map(tagMapper::toDto).collect(Collectors.toSet());
+    }
+
+    @Transactional
+    @Override
+    public void attachTag(CertificateTagDto certificateTagDto) {
+        Optional<Tag> tag = tagDao.findById(certificateTagDto.getCertificateId());
+        Optional<GiftCertificate> giftCertificate = giftCertificateDao.findById(certificateTagDto.getCertificateId());
+        if (tag.isEmpty() || giftCertificate.isEmpty()) {
+            throw new ResourceNotFoundException(certificateTagDto.getCertificateId(), certificateTagDto.getTagId());
+        }
+        tagDao.attachTag(certificateTagDto.getTagId(), certificateTagDto.getCertificateId());
     }
 }

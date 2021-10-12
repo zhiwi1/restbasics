@@ -28,30 +28,30 @@ public class TagController {
 
     @GetMapping
     public List<TagDto> findAll() {
-        return tagService.findAllTags();
+        return tagService.findAll();
     }
 
     @GetMapping("/{id}")
     public TagDto findById(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
-        return tagService.findTagById(id);
+        return tagService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createTag(@Valid @RequestBody TagDto tagDto) {
-        tagService.addTag(tagDto);
+        tagService.create(tagDto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTag(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
-        tagService.removeTag(id);
+        tagService.delete(id);
     }
-
+    //todo return entity
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public void create(@Valid @RequestBody CertificateTagDto certificateTagDto) {
-        certificateTagService.addCertificateTag(certificateTagDto);
+    @PostMapping("/attach")
+    public void attachTag(@Valid @RequestBody CertificateTagDto certificateTagDto) {
+        tagService.attachTag(certificateTagDto);
     }
 }
 

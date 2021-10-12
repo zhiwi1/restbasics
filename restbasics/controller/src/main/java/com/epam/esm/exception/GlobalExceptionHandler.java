@@ -1,5 +1,6 @@
 package com.epam.esm.exception;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionFailedException;
@@ -19,14 +20,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 @Slf4j
 class GlobalExceptionHandler {
     private final ExceptionMessageCreator exceptionMessageCreator;
 
-    @Autowired
-    public GlobalExceptionHandler(ExceptionMessageCreator exceptionMessageCreator) {
-        this.exceptionMessageCreator = exceptionMessageCreator;
-    }
+
 
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -45,12 +44,12 @@ class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleDublicateResourceException(
             DublicateResourceException e, Locale locale) {
-        String exceptionMessage = exceptionMessageCreator.createMessage(e.getMessageKey(),
-                locale);
+        String exceptionMessage = exceptionMessageCreator.createMessage(e.getErrorMessageKey(),
+                locale,e.getEntityName());
         log.error(exceptionMessage);
         return new ExceptionResponse(e.getCode(), exceptionMessage);
     }
-
+//todo var
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Set<ExceptionResponse> onMethodArgumentNotValidException(
@@ -67,8 +66,8 @@ class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionResponse handleResourceNotFoundException(
             ResourceNotFoundException e, Locale locale) {
-        String exceptionMessage = exceptionMessageCreator.createMessage(e.getMessageKey(),
-                locale);
+        String exceptionMessage = exceptionMessageCreator.createMessage(e.getErrorMessageKey(),
+                locale,e.getId());
         log.error(exceptionMessage);
         return new ExceptionResponse(e.getCode(), exceptionMessage);
     }

@@ -29,7 +29,7 @@ public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
                 .build();
     }
 
-    private ZonedDateTime convertToZoneDateTime(Timestamp createTimestamp) {
-        return ZonedDateTime.ofInstant(createTimestamp.toInstant(), ZoneId.systemDefault());
+    private ZonedDateTime convertToZoneDateTime(Timestamp timestamp) {
+        return ZonedDateTime.ofInstant(timestamp.toInstant(), ZoneId.systemDefault());
     }
 }

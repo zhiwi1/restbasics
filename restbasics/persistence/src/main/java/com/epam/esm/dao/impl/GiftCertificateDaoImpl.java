@@ -66,11 +66,25 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                     )
             );
         } catch (EmptyResultDataAccessException e) {
+            log.error("Zero rows were actually returns by id={}:{}", id, e.getMessage());
+//todo good log
             log.error(String.format("Zero rows were actually returns by id=%d:%s", id, e.getMessage()));
         }
         return Optional.empty();
     }
-
+    @Override
+    public Optional<GiftCertificate> findByName(String name) {
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(
+                            SQL_FIND_CERTIFICATE_BY_NAME, new Object[]{name}, new int[]{Types.VARCHAR}, certificateMapper
+                    )
+            );
+        } catch (EmptyResultDataAccessException e) {
+            log.error(String.format("Zero rows were actually returns by name= %s : %s", name, e.getMessage()));
+        }
+        return Optional.empty();
+    }
     @Override
     public List<GiftCertificate> findAll() {
         return jdbcTemplate.query(SQL_FIND_ALL_CERTIFICATES, certificateMapper);
@@ -78,6 +92,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public GiftCertificate create(GiftCertificate certificate) {
+        certificate.setCreateDate(ZonedDateTime.now(ZoneId.systemDefault()));
+        certificate.setLastUpdateDate(ZonedDateTime.now(ZoneId.systemDefault()));
         var keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SQL_INSERT_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
@@ -123,8 +139,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public Optional<GiftCertificate> applyPatch(Map<String, Object> paramMap, Long id) {
-        return Optional.empty();
+    public GiftCertificate applyPatch(Map<String, Object> paramMap, Long id) {
+        return null;
     }
 
     @Override
@@ -133,7 +149,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @UtilityClass
-    class ParamColumn {
+   static class ParamColumn {
         public static final int NAME_PARAM_ID = 1;
         public static final int DESCRIPTION_PARAM_ID = 2;
         public static final int PRICE_PARAM_ID = 3;

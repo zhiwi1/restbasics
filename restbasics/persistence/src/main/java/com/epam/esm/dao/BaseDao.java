@@ -8,6 +8,8 @@ public interface BaseDao<T, K> {
 
     Optional<T> findById(K id);
 
+    Optional<T> findByName(String name);
+
     T create(T entity);
 
     void delete(K id);

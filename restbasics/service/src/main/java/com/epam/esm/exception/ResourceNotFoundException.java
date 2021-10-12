@@ -1,12 +1,18 @@
 package com.epam.esm.exception;
 
+import lombok.Getter;
+
+@Getter
 public class ResourceNotFoundException extends ServiceException {
-    public ResourceNotFoundException(String messageKey, int code) {
-        super(messageKey);
+    private final Long[] id;
+
+    public ResourceNotFoundException(Long... id) {
+        super();
+        this.id = id;
     }
 
     @Override
-    public String getMessageKey() {
+    public String getErrorMessageKey() {
         return ExceptionMessageKey.RESOURCE_NOT_FOUND_KEY;
     }
 

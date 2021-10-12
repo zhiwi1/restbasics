@@ -1,10 +1,8 @@
 package com.epam.esm.exception;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 public abstract class ServiceException extends RuntimeException {
     public ServiceException() {
+        super();
     }
 
     public ServiceException(String message) {
@@ -23,7 +21,7 @@ public abstract class ServiceException extends RuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public abstract String getMessageKey();
+    public abstract String getErrorMessageKey();
 
     public abstract int getCode();
 }

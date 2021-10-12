@@ -8,17 +8,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource(value = "classpath:property/database.properties", encoding = "UTF-8")
+@ComponentScan("com.epam.esm.config")
 public class DatabaseConfig {
-
-  DatabaseConfigParam databaseConfigParam;
+    @Autowired
+    private DatabaseConfigParam databaseConfigParam;
 
     @Profile("prod")
     @Bean
@@ -31,13 +30,10 @@ public class DatabaseConfig {
         config.setMaximumPoolSize(Integer.parseInt(databaseConfigParam.getPoolSize()));
         return new HikariDataSource(config);
     }
+
     @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
-    @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 }
 

@@ -16,7 +16,7 @@ public class ExceptionMessageCreator {
         this.messageSource = messageSource;
     }
 
-    public String createMessage(String exceptionMessageKey,  Locale locale) {
-        return messageSource.getMessage(exceptionMessageKey, new Object[]{}, locale);
+    public String createMessage(String exceptionMessageKey, Locale locale, Object... args) {
+       return messageSource.getMessage(exceptionMessageKey, args, locale);
     }
 }

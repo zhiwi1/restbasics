@@ -6,6 +6,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.LocaleResolver;
@@ -24,8 +26,8 @@ import java.util.TimeZone;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"com.epam.esm"})
+@PropertySource(value = "classpath:config.properties", encoding = "UTF-8")
 public class WebConfig implements WebMvcConfigurer {
-
     @Autowired
     private WebConfigParam webConfigParam;
 
@@ -39,7 +41,7 @@ public class WebConfig implements WebMvcConfigurer {
         CookieLocaleResolver resolver = new CookieLocaleResolver();
         resolver.setDefaultLocale(new Locale(webConfigParam.getLanguageOfLocale()));
         resolver.setCookieName(webConfigParam.getCookieName());
-        resolver.setCookieMaxAge(webConfigParam.getCookieMaxAge());
+        resolver.setCookieMaxAge(Integer.parseInt(webConfigParam.getCookieMaxAge()));
         resolver.setDefaultTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
         return resolver;
     }
@@ -59,7 +61,10 @@ public class WebConfig implements WebMvcConfigurer {
         messageSource.setDefaultEncoding(webConfigParam.getEncoding());
         return messageSource;
     }
-
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfig() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor() {
         return new MethodValidationPostProcessor();

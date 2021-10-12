@@ -10,7 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
+//todo header i18n
+//todo id=0 find by id
+//todo id in patch pathvariable
+//todo patch "" ""
+//todo update date in certificate when delete tag
 @Component
 @RequiredArgsConstructor
 public class ServiceGiftCertificateMapper {
