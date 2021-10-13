@@ -1,0 +1,19 @@
+plugins {
+    id 'war'
+}
+
+
+dependencies {
+    implementation project(':model')
+    implementation project(':persistence')
+    implementation 'org.springframework:spring-jdbc:5.3.8'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
+    implementation 'org.hibernate:hibernate-validator:5.4.0.Final'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.modelmapper:modelmapper:2.4.4'
+    testCompile("org.junit.jupiter:junit-jupiter-params:5.6.0")
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+
+
+}

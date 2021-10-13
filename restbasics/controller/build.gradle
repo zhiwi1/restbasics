@@ -1,0 +1,16 @@
+plugins {
+    id 'war'
+}
+
+dependencies {
+    implementation project(':model')
+    implementation project(':service')
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.5'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
+    implementation 'org.springframework:spring-webmvc:5.3.8'
+    implementation 'org.hibernate:hibernate-validator:5.4.0.Final'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+}
+
