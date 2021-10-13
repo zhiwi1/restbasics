@@ -9,7 +9,6 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 @Getter
 public enum OrderType {
-
     NAME("name", " ORDER BY name"),
     CREATE_DATE("date", " ORDER BY create_date");
 

@@ -1,6 +1,5 @@
 package com.epam.esm.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,12 +14,12 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GiftCertificate {
-   private long id;
-   private String name;
-   private String description;
-   private BigDecimal price;
-   private ZonedDateTime createDate;
-   private ZonedDateTime lastUpdateDate;
-   private int duration;
-   private Set<Tag> tags;
+    private long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private ZonedDateTime createDate;
+    private ZonedDateTime lastUpdateDate;
+    private int duration;
+    private Set<Tag> tags;
 }

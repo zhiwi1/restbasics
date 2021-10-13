@@ -1,10 +1,15 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.exception.ExceptionMessageKey;
-import lombok.*;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 
 @Data
 @Builder

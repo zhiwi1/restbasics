@@ -1,6 +1,5 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.exception.ExceptionMessageKey;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
