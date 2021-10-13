@@ -1,0 +1,37 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET global FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`tags` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE IF NOT EXISTS `mydb`.`certificates` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `price` DECIMAL(10) NULL,
+  `create_date` TIMESTAMP NULL,
+  `last_update_date` TIMESTAMP NULL,
+  `duration` INT NULL,
+    `description` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`));
+
+CREATE TABLE IF NOT EXISTS `mydb`.`certificate_tags` (
+  `tag_id` BIGINT NOT NULL,
+  `certificate_id` BIGINT NOT NULL,
+  PRIMARY KEY (`tag_id`, `certificate_id`),
+    FOREIGN KEY (`tag_id`)
+    REFERENCES `mydb`.`tags` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (`certificate_id`)
+    REFERENCES `mydb`.`certificates` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+;
+

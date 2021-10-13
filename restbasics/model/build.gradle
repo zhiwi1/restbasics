@@ -1,0 +1,6 @@
+plugins {
+    id 'war'
+}
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.12.5'
+}
