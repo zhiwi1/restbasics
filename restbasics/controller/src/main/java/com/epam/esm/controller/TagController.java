@@ -33,19 +33,19 @@ public class TagController {
     }
 
     @GetMapping("/{id:\\d+}")
-    public TagDto findById(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id) {
+    public TagDto findById(@PathVariable @Range(min = 0) Long id) {
         return tagService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDto createTag(@Valid @RequestBody TagCreateDto tagCreateDto) {
+    public TagDto create(@Valid @RequestBody TagCreateDto tagCreateDto) {
         return tagService.create(tagCreateDto);
     }
 
     @DeleteMapping("/{id:\\d+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTag(@PathVariable  @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id) {
+    public void delete(@PathVariable  @Range(min = 0) Long id) {
         tagService.delete(id);
     }
 

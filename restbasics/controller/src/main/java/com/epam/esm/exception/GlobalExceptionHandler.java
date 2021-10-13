@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 class GlobalExceptionHandler {
+    private static final String SPACE_DELIMITER = " ";
     private final ExceptionMessageCreator exceptionMessageCreator;
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -29,7 +30,7 @@ class GlobalExceptionHandler {
     Set<ExceptionResponse> onConstraintValidationException(
             ConstraintViolationException e, Locale locale) {
         Set<ConstraintViolation<?>> set = e.getConstraintViolations();
-        return set.stream().map(violation -> exceptionMessageCreator.
+        return set.stream().map(violation -> violation.getInvalidValue() + SPACE_DELIMITER + exceptionMessageCreator.
                         createMessage(violation.getMessage(), locale))
                 .map(message -> new ExceptionResponse(
                         ExceptionCode.INCORRECT_PARAMETER_VALUE, message))
@@ -52,7 +53,7 @@ class GlobalExceptionHandler {
     Set<ExceptionResponse> onMethodArgumentNotValidException(
             MethodArgumentNotValidException e, Locale locale) {
         return e.getBindingResult().getFieldErrors().stream()
-                .map(error -> exceptionMessageCreator.createMessage(error.getDefaultMessage(), locale))
+                .map(error -> error.getField() + SPACE_DELIMITER + exceptionMessageCreator.createMessage(error.getDefaultMessage(), locale))
                 .map(message -> new ExceptionResponse(
                         ExceptionCode.INCORRECT_PARAMETER_VALUE, message))
                 .collect(Collectors.toSet());
@@ -68,7 +69,6 @@ class GlobalExceptionHandler {
         return exceptionMessage.stream()
                 .map(message -> new ExceptionResponse(e.getCode(), message))
                 .collect(Collectors.toSet());
-
     }
 
 
@@ -90,11 +90,11 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleRuntimeException(RuntimeException exception, Locale locale) {
-        String exceptionMessage = exceptionMessageCreator.createMessage(ExceptionMessageKey.INTERNAL_ERROR_KEY, locale);
+        String exceptionMessage = exceptionMessageCreator.createMessage(ExceptionMessageKey.VALUE_NOT_IN_RANGE, locale);
         log.error(exceptionMessage);
-        return new ExceptionResponse(ExceptionCode.INTERNAL_ERROR, exceptionMessage);
+        return new ExceptionResponse(ExceptionCode.INCORRECT_PARAMETER_VALUE, exceptionMessage);
     }
 
 }

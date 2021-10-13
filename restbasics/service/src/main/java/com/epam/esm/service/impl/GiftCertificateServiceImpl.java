@@ -43,7 +43,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         GiftCertificate certificate = certificateMapper.toEntity(giftCertificateInputDto);
         GiftCertificate addedCertificate = giftCertificateDao.create(certificate);
         return certificateMapper.toDto(addedCertificate);
-
     }
 
     @Override

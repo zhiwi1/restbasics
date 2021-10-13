@@ -60,8 +60,9 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void delete(Long id) {
-        if (tagDao.findById(id).isEmpty()) {
-            throw new ResourceNotFoundException();
+        Optional<Tag> tag = tagDao.findById(id);
+        if (tag.isEmpty()) {
+            throw new ResourceNotFoundException(id);
         }
         giftCertificateDao.findIdByTagId(id).ifPresent(giftCertificateDao::updateLastDate);
         tagDao.delete(id);

@@ -29,7 +29,7 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/{id:\\d+}")
-    public GiftCertificateDto findById(@Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) @PathVariable long id) {
+    public GiftCertificateDto findById(@Range(min = 0) @PathVariable Long id) {
         return giftCertificateService.findById(id);
     }
 
@@ -40,13 +40,13 @@ public class GiftCertificateController {
     }
 
     @PatchMapping("/{id:\\d+}")
-    public GiftCertificateDto update(@PathVariable  @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id, @Valid @RequestBody GiftCertificateInputDto giftCertificate) {
+    public GiftCertificateDto update(@PathVariable  @Range(min = 0) Long id, @Valid @RequestBody GiftCertificateInputDto giftCertificate) {
         return giftCertificateService.update(id,giftCertificate);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id:\\d+}")
-    public void delete(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id) {
+    public void delete(@PathVariable @Range(min = 0) Long id) {
         giftCertificateService.delete(id);
     }
 }
