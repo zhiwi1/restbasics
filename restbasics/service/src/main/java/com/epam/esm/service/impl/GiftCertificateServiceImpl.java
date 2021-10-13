@@ -35,12 +35,12 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public GiftCertificateDto create(GiftCertificateInputDto giftCertificateCreateDto) {
-        Optional<GiftCertificate> existingCertificate = giftCertificateDao.findByName(giftCertificateCreateDto.getName());
+    public GiftCertificateDto create(GiftCertificateInputDto giftCertificateInputDto) {
+        Optional<GiftCertificate> existingCertificate = giftCertificateDao.findByName(giftCertificateInputDto.getName());
         if (existingCertificate.isPresent()) {
-            throw new DublicateResourceException(giftCertificateCreateDto.getName());
+            throw new DublicateResourceException(giftCertificateInputDto.getName());
         }
-        GiftCertificate certificate = certificateMapper.toEntity(giftCertificateCreateDto);
+        GiftCertificate certificate = certificateMapper.toEntity(giftCertificateInputDto);
         GiftCertificate addedCertificate = giftCertificateDao.create(certificate);
         return certificateMapper.toDto(addedCertificate);
 
