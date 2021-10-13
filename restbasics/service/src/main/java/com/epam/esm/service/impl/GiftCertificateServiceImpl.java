@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDao;
+import com.epam.esm.dto.GiftCertificateInputDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.entity.Tag;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 
@@ -35,16 +35,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public GiftCertificateDto create(GiftCertificateDto giftCertificateDto) {
-        Optional<GiftCertificate> existingCertificate = giftCertificateDao.findByName(giftCertificateDto.getName());
+    public GiftCertificateDto create(GiftCertificateInputDto giftCertificateCreateDto) {
+        Optional<GiftCertificate> existingCertificate = giftCertificateDao.findByName(giftCertificateCreateDto.getName());
         if (existingCertificate.isPresent()) {
-            throw new DublicateResourceException(giftCertificateDto.getName());
+            throw new DublicateResourceException(giftCertificateCreateDto.getName());
         }
-        GiftCertificate giftCertificate = certificateMapper.toEntity(giftCertificateDto);
-        GiftCertificate addedGiftCertificate = giftCertificateDao.create(giftCertificate);
-        certificateMapper.toDto(addedGiftCertificate);
-        attachTagsToCertificate(giftCertificateDto);
-        return giftCertificateDto;
+        GiftCertificate certificate = certificateMapper.toEntity(giftCertificateCreateDto);
+        GiftCertificate addedCertificate = giftCertificateDao.create(certificate);
+        return certificateMapper.toDto(addedCertificate);
+
     }
 
     @Override
@@ -77,32 +76,13 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     @Transactional
     @Override
-    public GiftCertificateDto update(GiftCertificateDto giftCertificateDto) {
-        attachTagsToCertificate(giftCertificateDto);
-        GiftCertificateDto foundGiftCertificateDto = findById(giftCertificateDto.getId());
+    public GiftCertificateDto update(Long id, GiftCertificateInputDto giftCertificateDto) {
+        GiftCertificateDto foundGiftCertificateDto = findById(id);
         updateFields(foundGiftCertificateDto, giftCertificateDto);
         GiftCertificate foundGiftCertificate = certificateMapper.toEntity(foundGiftCertificateDto);
         GiftCertificate updatedGiftCertificate = giftCertificateDao.update(foundGiftCertificate);
         return certificateMapper.toDto(updatedGiftCertificate);
     }
-
-    @Transactional
-    @Override
-    public GiftCertificateDto applyPatch(GiftCertificateDto giftCertificateDto) {
-//        attachTagsToCertificate(giftCertificateDto);
-//        GiftCertificateDto foundGiftCertificateDto = findById(giftCertificateDto.getId());
-//        Map<String,Object> fields=new HashMap<>();
-//        fields.put("name",foundGiftCertificateDto.getName());
-//        fields.put("description",giftCertificateDto.getDescription());
-//        fields.put("duration",giftCertificateDto.getDuration());
-//        fields.put("price",giftCertificateDto.getPrice());
-//        Stream.of(fields).forEach();
-//        GiftCertificate foundGiftCertificate = certificateMapper.toEntity(foundGiftCertificateDto);
-//        giftCertificateDao.applyPatch()
-//        GiftCertificate updatedGiftCertificate = giftCertificateDao.update(foundGiftCertificate);
-        return giftCertificateDto;
-    }
-
 
     @Transactional
     @Override
@@ -112,22 +92,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             throw new ResourceNotFoundException(id);
         }
         giftCertificateDao.delete(id);
-        //todo reten boolean jdbc template delete
-
-    }
-
-    private void attachTagsToCertificate(GiftCertificateDto giftCertificateDto) {
-        Set<TagDto> tags = new HashSet<>();
-        if (giftCertificateDto.getTags() != null) {
-            Set<TagDto> tagsSet = giftCertificateDto.getTags()
-                    .stream()
-                    .map(tagMapper::toEntity)
-                    .map(tagDao::create)
-                    .map(tagMapper::toDto)
-                    .collect(Collectors.toSet());
-            tags.addAll(tagsSet);
-        }
-        giftCertificateDto.setTags(tags);
     }
 
     private GiftCertificateDto convertGiftCertificateAndSetTags(GiftCertificate giftCertificate) {
@@ -139,20 +103,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
 
-    private void updateFields(GiftCertificateDto foundCertificate, GiftCertificateDto receivedGiftCertificate) {
-       Optional.ofNullable(receivedGiftCertificate.getName()).ifPresent(foundCertificate::setName);
-       //stream
-        if (receivedGiftCertificate.getDuration() != 0) {
-
-            foundCertificate.setDuration(receivedGiftCertificate.getDuration());
-        }
-        if (receivedGiftCertificate.getDescription() != null) {
-            foundCertificate.setDescription(receivedGiftCertificate.getDescription());
-        }
-        if (receivedGiftCertificate.getPrice() != null) {
-            foundCertificate.setPrice(receivedGiftCertificate.getPrice());
-        }
-        foundCertificate.setTags(receivedGiftCertificate.getTags());
+    private void updateFields(GiftCertificateDto foundCertificate, GiftCertificateInputDto receivedGiftCertificate) {
+        Optional.ofNullable(receivedGiftCertificate.getName()).ifPresent(foundCertificate::setName);
+        Optional.ofNullable(receivedGiftCertificate.getDescription()).ifPresent(foundCertificate::setDescription);
+        Optional.ofNullable(receivedGiftCertificate.getPrice()).ifPresent(foundCertificate::setPrice);
+        Optional.of(receivedGiftCertificate.getDuration()).filter(duration -> duration != 0).ifPresent(foundCertificate::setDuration);
     }
 }
 

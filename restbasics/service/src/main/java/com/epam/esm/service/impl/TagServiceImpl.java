@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.CertificateTagDto;
+import com.epam.esm.dto.TagCreateDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.dao.TagDao;
@@ -28,14 +29,15 @@ public class TagServiceImpl implements TagService {
     private final GiftCertificateDao giftCertificateDao;
     private final ServiceTagMapper tagMapper;
 
+
     @Transactional
     @Override
-    public TagDto create(TagDto tagDto) {
-        Optional<Tag> existingTagOptional = tagDao.findByName(tagDto.getName());
+    public TagDto create(TagCreateDto tagCreateDto) {
+        Optional<Tag> existingTagOptional = tagDao.findByName(tagCreateDto.getName());
         if (existingTagOptional.isPresent()) {
-            throw new DublicateResourceException(tagDto.getName());
+            throw new DublicateResourceException(tagCreateDto.getName());
         }
-        Tag tag = tagMapper.toEntity(tagDto);
+        Tag tag = tagMapper.toEntity(tagCreateDto);
         Tag insertedTag = tagDao.create(tag);
         return tagMapper.toDto(insertedTag);
     }
@@ -58,7 +60,10 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public void delete(Long id) {
-        tagDao.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+        if (tagDao.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+        giftCertificateDao.findIdByTagId(id).ifPresent(giftCertificateDao::updateLastDate);
         tagDao.delete(id);
     }
 
@@ -77,5 +82,6 @@ public class TagServiceImpl implements TagService {
             throw new ResourceNotFoundException(certificateTagDto.getCertificateId(), certificateTagDto.getTagId());
         }
         tagDao.attachTag(certificateTagDto.getTagId(), certificateTagDto.getCertificateId());
+        giftCertificateDao.updateLastDate(certificateTagDto.getCertificateId());
     }
 }

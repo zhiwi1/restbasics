@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 
+import com.epam.esm.dto.GiftCertificateInputDto;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.GiftCertificateQueryParamDto;
@@ -23,34 +24,29 @@ public class GiftCertificateController {
     private final GiftCertificateService giftCertificateService;
 
     @GetMapping
-    public List<GiftCertificateDto> findGiftCertificates(@Valid @RequestBody
-                                                                GiftCertificateQueryParamDto giftCertificateQueryParametersDto) {
+    public List<GiftCertificateDto> findGiftCertificates(@Valid @RequestBody GiftCertificateQueryParamDto giftCertificateQueryParametersDto) {
         return giftCertificateService.findGiftCertificates(giftCertificateQueryParametersDto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d+}")
     public GiftCertificateDto findById(@Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) @PathVariable long id) {
         return giftCertificateService.findById(id);
     }
-//todo GiftCertificateCreateDto
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void create(@Valid @RequestBody GiftCertificateDto giftCertificate) {
-        giftCertificateService.create(giftCertificate);
+    public GiftCertificateDto create(@Valid @RequestBody GiftCertificateInputDto giftCertificate) {
+        return giftCertificateService.create(giftCertificate);
     }
 
-    @PatchMapping
-    public void update(@Valid @RequestBody GiftCertificateDto giftCertificate) {
-        giftCertificateService.update(giftCertificate);
+    @PatchMapping("/{id:\\d+}")
+    public GiftCertificateDto update(@PathVariable  @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id, @Valid @RequestBody GiftCertificateInputDto giftCertificate) {
+        return giftCertificateService.update(id,giftCertificate);
     }
-//    @PatchMapping
-//    public GiftCertificateDto updateCertificate(@Validated(PatchDto.class) @RequestBody GiftCertificateDto certificate) {
-//        return giftCertificateService.appl(certificate);
-//    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
+    @DeleteMapping("/{id:\\d+}")
+    public void delete(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id) {
         giftCertificateService.delete(id);
     }
 }

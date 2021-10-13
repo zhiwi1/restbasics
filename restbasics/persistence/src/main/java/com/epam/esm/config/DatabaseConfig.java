@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm.config")
+@PropertySource("classpath:property/database.properties")
 public class DatabaseConfig {
     @Autowired
     private DatabaseConfigParam databaseConfigParam;

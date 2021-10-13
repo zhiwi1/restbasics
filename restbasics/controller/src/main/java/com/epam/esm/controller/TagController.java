@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateTagDto;
+import com.epam.esm.dto.TagCreateDto;
 import com.epam.esm.service.TagService;
 import com.epam.esm.dto.TagDto;
 
@@ -31,23 +32,23 @@ public class TagController {
         return tagService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public TagDto findById(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
+    @GetMapping("/{id:\\d+}")
+    public TagDto findById(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id) {
         return tagService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTag(@Valid @RequestBody TagDto tagDto) {
-        tagService.create(tagDto);
+    public TagDto createTag(@Valid @RequestBody TagCreateDto tagCreateDto) {
+        return tagService.create(tagCreateDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id:\\d+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTag(@PathVariable @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) long id) {
+    public void deleteTag(@PathVariable  @Range(min = 0, message = ExceptionMessageKey.VALUE_NOT_IN_RANGE) Long id) {
         tagService.delete(id);
     }
-    //todo return entity
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/attach")
     public void attachTag(@Valid @RequestBody CertificateTagDto certificateTagDto) {

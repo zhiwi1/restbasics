@@ -11,4 +11,5 @@ public class ExceptionMessageKey {
     public static final String VALUE_NOT_IN_RANGE = "range";
     public static final String NOT_VALID_SIZE = "size";
     public static final String INVALID_INPUT="invalid_input";
+    public static final String INVALID_INPUT_WITH_PARAM="invalid_input_param";
 }

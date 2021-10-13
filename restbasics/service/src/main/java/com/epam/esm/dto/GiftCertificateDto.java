@@ -22,17 +22,17 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GiftCertificateDto {
-    @Range(min = 0,message = ExceptionMessageKey.VALUE_NOT_IN_RANGE)
+    @Range(min = 0)
     private long id;
-    @Size(max=100, message = ExceptionMessageKey.NOT_VALID_SIZE)
-    @Pattern(regexp = "[\\D ]+",message = ExceptionMessageKey.INVALID_INPUT)
+    @Size(max=100)
+    @Pattern(regexp = "[\\D ]+")
     private String name;
-    @Pattern(regexp = "[\\D ]+",message = ExceptionMessageKey.INVALID_INPUT)
-    @Size(max=200,message = ExceptionMessageKey.NOT_VALID_SIZE)
+    @Pattern(regexp = "[\\D ]+")
+    @Size(max=200)
     private String description;
-    @Range(min = 0,message = ExceptionMessageKey.VALUE_NOT_IN_RANGE)
+    @Range(min = 0)
     private BigDecimal price;
-    @Range(min = 0, max = Integer.MAX_VALUE,message = ExceptionMessageKey.VALUE_NOT_IN_RANGE)
+    @Range(min = 0, max = Integer.MAX_VALUE)
     private int duration;
     private Set<TagDto> tags;
     @JsonProperty("create_date")

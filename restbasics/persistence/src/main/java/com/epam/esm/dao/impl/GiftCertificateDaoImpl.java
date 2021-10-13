@@ -5,6 +5,7 @@ import com.epam.esm.entity.GiftCertificate;
 import static com.epam.esm.dao.impl.GiftCertificateDaoImpl.ParamColumn.*;
 
 import com.epam.esm.dao.GiftCertificateDao;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.mapper.GiftCertificateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
@@ -37,7 +38,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             "select id, name, price,  create_date, last_update_date, duration,description " +
                     "from certificates  WHERE id=?";
     private static final String SQL_FIND_CERTIFICATE_BY_NAME =
-            "select id, name, price,  create_date, last_update_date, duration " +
+            "select id, name, price,  create_date, last_update_date, duration,description " +
                     "from certificates  WHERE name =?";
     private static final String SQL_INSERT_CERTIFICATE =
             "insert into certificates(name, description, price, create_date, last_update_date, duration) " +
@@ -52,6 +53,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             + "description, price, duration, create_date, last_update_date FROM certificates "
             + "LEFT JOIN certificate_tags ON certificates.id = certificate_tags.certificate_id "
             + "LEFT JOIN tags ON certificate_tags.tag_id = tags.id ";
+    private static final String SQL_UPDATE_LAST_UPD_DATE = "UPDATE certificates SET last_update_date =? WHERE certificates.id=?";
+    private static final String SQL_FIND_BY_TAG_ID = "SELECT id FROM certificates "
+            + "INNER JOIN certificate_tags ON certificates.id = certificate_tags.certificate_id WHERE "
+            + "tag_id= ?";
 
     private final JdbcTemplate jdbcTemplate;
     private final GiftCertificateMapper certificateMapper;
@@ -67,11 +72,10 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
             );
         } catch (EmptyResultDataAccessException e) {
             log.error("Zero rows were actually returns by id={}:{}", id, e.getMessage());
-//todo good log
-            log.error(String.format("Zero rows were actually returns by id=%d:%s", id, e.getMessage()));
         }
         return Optional.empty();
     }
+
     @Override
     public Optional<GiftCertificate> findByName(String name) {
         try {
@@ -81,10 +85,11 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                     )
             );
         } catch (EmptyResultDataAccessException e) {
-            log.error(String.format("Zero rows were actually returns by name= %s : %s", name, e.getMessage()));
+            log.error("Zero rows were actually returns by name= {} : {}", name, e.getMessage());
         }
         return Optional.empty();
     }
+
     @Override
     public List<GiftCertificate> findAll() {
         return jdbcTemplate.query(SQL_FIND_ALL_CERTIFICATES, certificateMapper);
@@ -118,8 +123,6 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         );
     }
 
-
-    //todo method update patch побегать по мапке
     @Override
     public GiftCertificate update(GiftCertificate giftCertificate) {
         giftCertificate.setLastUpdateDate(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -129,33 +132,46 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                     new Object[]{giftCertificate.getName(),
                             giftCertificate.getPrice(), giftCertificate.getLastUpdateDate(),
                             giftCertificate.getDuration(), giftCertificate.getDescription(), giftCertificate.getId()},
-                    new int[]{Types.VARCHAR, Types.DECIMAL, Types.TIMESTAMP, Types.INTEGER, Types.VARCHAR, Types.BIGINT});
+                    new int[]{Types.VARCHAR, Types.DECIMAL, Types.TIMESTAMP, Types.INTEGER, Types.VARCHAR, Types.BIGINT}
+            );
 
         } catch (EmptyResultDataAccessException e) {
-            log.error(String.format("Zero rows were actually returns:%s", e.getMessage()));
+            log.error("Zero rows were actually returns:{}", e.getMessage());
         }
         return giftCertificate;
 
     }
 
     @Override
-    public GiftCertificate applyPatch(Map<String, Object> paramMap, Long id) {
-        return null;
+    public Optional<Long> findIdByTagId(Long tagId) {
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(SQL_FIND_BY_TAG_ID, Long.class, tagId)
+            );
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Zero rows were actually returns by name= {} : {}", tagId, e.getMessage());
+        }
+        return Optional.empty();
     }
+
 
     @Override
     public List<GiftCertificate> findByQueryParameters(String query) {
         return jdbcTemplate.query(SQL_FIND_ALL_BY_PARAM + query, certificateMapper);
     }
 
+    @Override
+    public void updateLastDate(Long id) {
+        jdbcTemplate.update(SQL_UPDATE_LAST_UPD_DATE, ZonedDateTime.now(ZoneId.systemDefault()), id);
+    }
+
     @UtilityClass
-   static class ParamColumn {
+    static class ParamColumn {
         public static final int NAME_PARAM_ID = 1;
         public static final int DESCRIPTION_PARAM_ID = 2;
         public static final int PRICE_PARAM_ID = 3;
         public static final int CREATE_DATE_PARAM_ID = 4;
         public static final int LAST_UPDATE_DATE_PARAM_ID = 5;
         public static final int DURATION_PARAM_ID = 6;
-
     }
 }

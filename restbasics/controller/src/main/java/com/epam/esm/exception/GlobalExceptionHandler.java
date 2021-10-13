@@ -2,7 +2,6 @@ package com.epam.esm.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +24,6 @@ import java.util.stream.Collectors;
 class GlobalExceptionHandler {
     private final ExceptionMessageCreator exceptionMessageCreator;
 
-
-
-
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Set<ExceptionResponse> onConstraintValidationException(
@@ -40,22 +36,23 @@ class GlobalExceptionHandler {
                 .collect(Collectors.toSet());
 
     }
+
     @ExceptionHandler(DublicateResourceException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionResponse handleDublicateResourceException(
             DublicateResourceException e, Locale locale) {
         String exceptionMessage = exceptionMessageCreator.createMessage(e.getErrorMessageKey(),
-                locale,e.getEntityName());
+                locale, e.getMessage());
         log.error(exceptionMessage);
         return new ExceptionResponse(e.getCode(), exceptionMessage);
     }
-//todo var
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Set<ExceptionResponse> onMethodArgumentNotValidException(
             MethodArgumentNotValidException e, Locale locale) {
         return e.getBindingResult().getFieldErrors().stream()
-                .map(error->exceptionMessageCreator.createMessage(error.getDefaultMessage(), locale))
+                .map(error -> exceptionMessageCreator.createMessage(error.getDefaultMessage(), locale))
                 .map(message -> new ExceptionResponse(
                         ExceptionCode.INCORRECT_PARAMETER_VALUE, message))
                 .collect(Collectors.toSet());
@@ -64,17 +61,21 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionResponse handleResourceNotFoundException(
+    public Set<ExceptionResponse> handleResourceNotFoundException(
             ResourceNotFoundException e, Locale locale) {
-        String exceptionMessage = exceptionMessageCreator.createMessage(e.getErrorMessageKey(),
-                locale,e.getId());
-        log.error(exceptionMessage);
-        return new ExceptionResponse(e.getCode(), exceptionMessage);
+        Set<String> exceptionMessage = exceptionMessageCreator.createMessage(e.getErrorMessageKey(),
+                locale, (Object[]) e.getId());
+        return exceptionMessage.stream()
+                .map(message -> new ExceptionResponse(e.getCode(), message))
+                .collect(Collectors.toSet());
+
     }
 
 
     @ExceptionHandler(ConversionFailedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleConflict(RuntimeException ex) {
+        log.error(ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

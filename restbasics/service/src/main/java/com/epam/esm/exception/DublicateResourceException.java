@@ -4,16 +4,14 @@ import lombok.Getter;
 
 @Getter
 public class DublicateResourceException extends ServiceException {
-    private final String entityName;
 
     public DublicateResourceException(String entityName) {
-        super();
-        this.entityName = entityName;
+        super(entityName);
     }
 
     @Override
     public String getErrorMessageKey() {
-        return ExceptionMessageKey.INVALID_INPUT;
+        return ExceptionMessageKey.INVALID_INPUT_WITH_PARAM;
     }
 
     @Override

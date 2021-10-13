@@ -1,5 +1,6 @@
 package com.epam.esm.mapper;
 
+import com.epam.esm.dto.GiftCertificateInputDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.dto.GiftCertificateDto;
@@ -10,11 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-//todo header i18n
-//todo id=0 find by id
-//todo id in patch pathvariable
-//todo patch "" ""
-//todo update date in certificate when delete tag
+
 @Component
 @RequiredArgsConstructor
 public class ServiceGiftCertificateMapper {
@@ -30,6 +27,9 @@ public class ServiceGiftCertificateMapper {
             giftCertificate.setTags(tags);
         }
         return giftCertificate;
+    }
+    public GiftCertificate toEntity(GiftCertificateInputDto giftCertificateCreateDto) {
+        return modelMapper.map(giftCertificateCreateDto, GiftCertificate.class);
     }
 
     public GiftCertificateDto toDto(GiftCertificate giftCertificate) {

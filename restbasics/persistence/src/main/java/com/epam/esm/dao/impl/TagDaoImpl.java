@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,8 @@ public class TagDaoImpl implements TagDao {
     private static final String SQL_FIND_BY_GIFT_CERTIFICATE_ID = "SELECT id, name FROM tags "
             + "INNER JOIN certificate_tags ON tags.id = certificate_tags.tag_id WHERE "
             + "certificate_id= ?";
-    private static final String SQL_ATTACH_TAG = "INSERT IGNORE INTO certificate_tags(tag_id,certificate_id) VALUES(?,?)";
+    private static final String SQL_ATTACH_TAG = "INSERT IGNORE INTO certificate_tags(certificate_id,tag_id) VALUES(?,?) ";
+
 
     private static final int NAME_PARAM_ID = 1;
     private final JdbcTemplate jdbcTemplate;
@@ -57,7 +60,7 @@ public class TagDaoImpl implements TagDao {
                     )
             );
         } catch (EmptyResultDataAccessException e) {
-            log.error(String.format("Zero rows were actually returns by id=%s:%s", name, e.getMessage()));
+            log.error("Zero rows were actually returns by id= {} : {} ", name, e.getMessage());
         }
         return Optional.empty();
     }
@@ -89,7 +92,8 @@ public class TagDaoImpl implements TagDao {
 
     @Override
     public void attachTag(Long tagId, Long certificateId) {
-        jdbcTemplate.update(SQL_ATTACH_TAG, tagId,certificateId);
+        jdbcTemplate.update(SQL_ATTACH_TAG, new Object[]{tagId, certificateId},
+                new int[]{Types.BIGINT, Types.BIGINT});
     }
 
 
@@ -102,7 +106,7 @@ public class TagDaoImpl implements TagDao {
                     )
             );
         } catch (EmptyResultDataAccessException e) {
-            log.error(String.format("Zero rows were actually returns by id=%d:%s", id, e.getMessage()));
+            log.error("Zero rows were actually returns by id=%{}:%{}", id, e.getMessage());
         }
         return Optional.empty();
     }

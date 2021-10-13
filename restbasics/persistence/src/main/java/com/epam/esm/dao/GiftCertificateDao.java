@@ -3,7 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.entity.GiftCertificate;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 
 public interface GiftCertificateDao extends BaseDao<GiftCertificate, Long> {
@@ -12,5 +12,8 @@ public interface GiftCertificateDao extends BaseDao<GiftCertificate, Long> {
 
     GiftCertificate update(GiftCertificate giftCertificate);
 
-    GiftCertificate applyPatch(Map<String, Object> paramMap, Long id);
+    void updateLastDate(Long id);
+
+    Optional<Long> findIdByTagId(Long tagId);
+
 }

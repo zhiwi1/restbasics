@@ -11,9 +11,9 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagDto {
-    @Range(min = 0,message = ExceptionMessageKey.VALUE_NOT_IN_RANGE)
+    @Range(min = 0)
     private long id;
-    @Size(min=2,max=100, message = ExceptionMessageKey.NOT_VALID_SIZE)
+    @Size(min=2,max=100)
     @Pattern(regexp = "[\\D ]+")
     private String name;
 }

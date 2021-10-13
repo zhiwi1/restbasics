@@ -14,8 +14,8 @@ import org.hibernate.validator.constraints.Range;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CertificateTagDto {
-    @Range(min = 0,message = ExceptionMessageKey.VALUE_NOT_IN_RANGE)
+    @Range(min = 0)
     private long certificateId;
-    @Range(min = 0,message = ExceptionMessageKey.VALUE_NOT_IN_RANGE)
+    @Range(min = 0)
     private long tagId;
 }
